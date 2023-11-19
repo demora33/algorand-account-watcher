@@ -1,0 +1,19 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Watchlist, WatchlistSchema } from './schemas/Watchlist.schema';
+import { WatchlistController } from './watchlist.controller';
+import { WatchlistService } from './watchlist.service';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: Watchlist.name,
+        schema: WatchlistSchema,
+      },
+    ]),
+  ],
+  providers: [WatchlistService],
+  controllers: [WatchlistController],
+})
+export class WatchlistModule {}
