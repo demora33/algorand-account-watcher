@@ -1,73 +1,68 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Algorand Account Watcher
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The Algorand Account Watcher is a simple REST API designed to allow users to add Algorand account addresses to a "watcher" list. It periodically checks the state of each account in the watcher list, logs notifications for changes in account balances, and provides an endpoint to list tracked accounts and their states.
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. **Accepting an Algorand Address:**
+   - Create a REST API endpoint to add an Algorand account address to the watcher list.
 
-## Installation
+2. **Periodic State Check:**
+   - Implement a CRON mechanism that checks the state of each account in the watcher list every 60 seconds.
 
-```bash
-$ npm install
-```
+3. **Logging Notifications:**
+   - Log notifications whenever a change in the balance of a watched account is detected.
 
-## Running the app
+4. **Listing Tracked Accounts:**
+   - Provide a REST API endpoint to list all tracked accounts and their current states.
 
-```bash
-# development
-$ npm run start
+## Technology Stack
 
-# watch mode
-$ npm run start:dev
+- [NestJS](https://nestjs.com/): A progressive Node.js framework for building efficient and scalable server-side applications.
+- [AlgoNode.io](https://algonode.io/): Algorand Node API for interacting with the Algorand blockchain (use testnet).
+- [MongoDB](https://www.mongodb.com/): NoSQL database for storing watchlists and account information.
 
-# production mode
-$ npm run start:prod
-```
+## Setup
 
-## Test
+1. Clone the repository:
 
-```bash
-# unit tests
-$ npm run test
+   ```bash
+   git clone https://github.com/your-username/algorand-account-watcher.git
+   ```
 
-# e2e tests
-$ npm run test:e2e
+2. Install dependencies:
 
-# test coverage
-$ npm run test:cov
-```
+   ```bash
+   cd algorand-account-watcher
+   npm install
+   ```
 
-## Support
+3. Configure MongoDB:
+   - Update the MongoDB connection details in the `src/config/database.config.ts` file.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4. Run the application:
 
-## Stay in touch
+   ```bash
+   npm run start
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+5. Access the API at `http://localhost:3000`.
+
+## Endpoints
+
+- **Add Algorand Address:**
+  - `POST /watchlist/add`
+  - Body: `{ "address": "ALGORAND_ADDRESS" }`
+
+- **List Tracked Accounts:**
+  - `GET /watchlist/list`
+
+## Contribution
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
