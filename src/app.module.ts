@@ -5,13 +5,15 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AccountModule } from './account/account.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
+import { AlgorandModule } from './algorand/algorand.module';
 
 @Module({
   imports: [
     // ScheduleModule.forRoot(),
     MongooseModule.forRoot('mongodb+srv://test:test@cluster1.eh2icve.mongodb.net/alfonso-ddbb-test'),
     AccountModule,
-    WatchlistModule
+    WatchlistModule,
+    AlgorandModule
   ],
   controllers: [AppController],
   providers: [AppService],
