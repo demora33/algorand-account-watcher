@@ -14,7 +14,7 @@ export class CreateAccountoDTO {
 export class UpdateAccountoDTO {
     @IsNotEmpty()
     @IsNumber()
-    round: number;
+    lastBlockUpdate: number;
 
     @IsOptional()
     @IsNotEmpty()

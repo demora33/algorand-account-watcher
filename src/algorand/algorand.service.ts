@@ -3,7 +3,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { AccountService } from '../account/account.service';
 import { WatchlistService } from 'src/watchlist/watchlist.service';
 import axios from 'axios';
-import { Account } from 'src/account/schemas/account.schema';
+import { UpdateAccountoDTO } from 'src/account/dto/account.dto';
+import { AccountStatus } from '../account/dto/account.dto';
 
 @Injectable()
 export class AlgorandService {
@@ -16,58 +17,82 @@ export class AlgorandService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    // this.logger.debug('Called every 60 seconds');
-    console.log('Cron has started');
-    console.log('Checking accounts in watchlist');
+    this.logger.debug('Cron has started');
+    console.log('------------------------------------');
+    console.log('Checking accounts in latest watchlist');
 
+    const latestWatchlist: any =
+      await this.watchlistService.findLatestWatchlist();
     const accounts = await this.watchlistService.getAccountsByWatchlistId(
-      '655922e6ecb84b93d51608d6',
+      latestWatchlist._id,
     );
 
+    if (accounts.length === 0) {
+      console.log('No accounts added in latest watchlist');
+      return;
+    }
+
     for (const account of accounts) {
-      console.log('address', account.address);
-
-      const watchedAccount: Account =
-        await this.accountService.findAccountByAddress(account.address);
-      //   console.log('watchedAccount', watchedAccount);
-
+      const watchedAccount = await this.accountService.findAccountByAddress(
+        account.address,
+      );
       await this.checkAccountState(watchedAccount);
-
-      // Si hay cambios, actualiza la base de datos
-      //   if (
-      //     externalApiResponse.status !== account.status ||
-      //     externalApiResponse.balance !== account.balance
-      //   ) {
-      //     await this.accountService.updateAccount(
-      //       account.id,
-      //       externalApiResponse.status,
-      //       externalApiResponse.balance,
-      //     );
-      //   }
     }
   }
 
-  private async checkAccountState(account: Account) {
+  private async checkAccountState(account: any) {
     try {
+      console.log(
+        `Checking account ${account.address} state on the Algorand Testnet`,
+      );
       const response = await axios.get(
         `https://testnet-api.algonode.cloud/v2/accounts/${account.address}`,
       );
-      //   console.log('response', response.data);
-      const accountBalance = response.data.amount;
 
-      console.log('accountBalance', accountBalance);
-      console.log('account.balance', account.balance);
+      const accountAlgorandData = response.data;
 
-      if (accountBalance !== account.balance) {
+
+      let updateAccount: UpdateAccountoDTO = {
+        lastBlockUpdate: 0,
+        balance: '',
+        status: AccountStatus.Offline,
+        rewards: 0,
+      };
+
+      if (accountAlgorandData.amount !== account.balance) {
+        updateAccount.balance = accountAlgorandData.amount;
+        updateAccount.lastBlockUpdate = accountAlgorandData.round;
+
         console.log(
           `Account ${account.address} state changed. New balance: ${
-            accountBalance / 1000000
+            accountAlgorandData.amount / 1000000
           }`,
         );
-        // await this.accountService.updateAccount(account.id, accountBalance);
+      }
+      if (accountAlgorandData.status !== account.status) {
+        updateAccount.status = accountAlgorandData.status;
+        updateAccount.lastBlockUpdate = accountAlgorandData.round;
+        console.log(
+          `Account ${account.address} state changed. New status: ${accountAlgorandData.status}`,
+        );
+      }
+      if (accountAlgorandData.rewards !== account.rewards) {
+        updateAccount.rewards = accountAlgorandData.rewards;
+        updateAccount.lastBlockUpdate = accountAlgorandData.round;
+        console.log(
+          `Account ${account.address} state changed. New rewards: ${accountAlgorandData.rewards}`,
+        );
+      }
+      // console.log(updateAccount);
+      if (updateAccount.lastBlockUpdate != 0) {
+        await this.accountService.updateAccount(account._id, updateAccount);
+      } else {
+        console.log(`Account ${account.address} state has not changed`)
       }
     } catch (error) {
-      //   console.error(`Error querying account ${address}: ${error.message}`);
+      console.error(
+        `Error querying account ${account.address}: ${error.message}`,
+      );
       throw error;
     }
   }

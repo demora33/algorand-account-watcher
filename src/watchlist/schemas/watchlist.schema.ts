@@ -4,7 +4,7 @@ import { Account } from '../../account/schemas/account.schema';
 
 
 
-@Schema()
+@Schema({timestamps: true})
 export class Watchlist {
 
   @Prop({ type: [Types.ObjectId], ref: 'Account', default: [] })

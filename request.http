@@ -1,6 +1,9 @@
-POST http://localhost:3000/watchlist/655922e9ecb84b93d51608dc HTTP/1.1
+# POST http://localhost:3000/watchlist/ HTTP/1.1
+
+
+POST http://localhost:3000/watchlist/655b91cb6f580d42d516b928 HTTP/1.1
 Content-Type: application/json
 
 {
-    "address": "73V26FPQ5A2ZLOKSS62SJ2WKMIMFWHOCNRXPRRV65ZY3ZUM5X5R6HJBJ2A"
+    "address": "JELZJBBZDH3XJGUCQC6HICGWYGJC5QAGNZUK7ZJTUQCJLXNATXPM52SKNE"
 }

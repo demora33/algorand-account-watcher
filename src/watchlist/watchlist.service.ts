@@ -11,10 +11,10 @@ import { AccountService } from 'src/account/account.service';
 export class WatchlistService {
   constructor(
     @InjectModel(Watchlist.name) private watchlistModel: Model<Watchlist>,
-    private accountService: AccountService
+    private accountService: AccountService,
   ) {}
 
-  async create() {
+  async create(): Promise<Watchlist> {
     const createdWatchlist = new this.watchlistModel();
     return createdWatchlist.save();
   }
@@ -23,13 +23,20 @@ export class WatchlistService {
     const watchlist = await this.watchlistModel.findById(watchlistId);
 
     if (!watchlist) {
-      // this.create(); 
       throw new Error('No existing watchlist');
     }
-    let account: Account = await this.accountService.findAccountByAddress(address);
+    let account: Account =
+      await this.accountService.findAccountByAddress(address);
     if (!account) {
       console.log('No existing account');
       account = await this.accountService.createAccount(address);
+    }
+
+    const accountExistsInWatchlist = watchlist.accounts.some(
+      (acc) => acc.address === account.address,
+    );
+    if (accountExistsInWatchlist) {
+      throw new Error('Account already exists in watchlist');
     }
 
     watchlist.accounts.push(account);
@@ -43,5 +50,9 @@ export class WatchlistService {
       throw new Error('No existing watchlist');
     }
     return watchlist.accounts;
+  }
+
+  async findLatestWatchlist(): Promise<Watchlist> {
+    return this.watchlistModel.findOne().sort({ createdAt: -1 }).exec();
   }
 }
