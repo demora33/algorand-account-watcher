@@ -10,7 +10,7 @@ require('dotenv').config();
 
 @Module({
   imports: [
-    // ScheduleModule.forRoot(),
+    ScheduleModule.forRoot(),
     MongooseModule.forRoot(process.env.DATABASE_URI),
     AccountModule,
     WatchlistModule,

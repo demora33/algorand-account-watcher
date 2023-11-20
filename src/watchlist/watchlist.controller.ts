@@ -24,8 +24,8 @@ export class WatchlistController {
         return this.watchlistService.addAddress(id, body.address);
     }
 
-@Get(':id/accounts')
-async getAccountsInWatchlist(@Param('id') id: string) {
-    // return this.watchlistService.getAccounts(id);
-}
+    @Get(':id/accounts')
+    async getAccountsInWatchlist(@Param('id') id: string) {
+        // return this.watchlistService.getAccounts(id);
+    }
 }

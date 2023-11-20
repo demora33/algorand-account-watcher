@@ -19,20 +19,29 @@ export class WatchlistService {
     return createdWatchlist.save();
   }
 
-  async addAddress(watchlistId: string, address: string) {
+  async addAddress(watchlistId: string, address: string): Promise<Watchlist> {
     const watchlist = await this.watchlistModel.findById(watchlistId);
 
     if (!watchlist) {
-      this.create();
+      // this.create(); 
       throw new Error('No existing watchlist');
     }
-    const account: Account = await this.accountService.findAccountByAddress(address);
+    let account: Account = await this.accountService.findAccountByAddress(address);
     if (!account) {
-      throw new Error('Account not found');
+      console.log('No existing account');
+      account = await this.accountService.createAccount(address);
     }
 
     watchlist.accounts.push(account);
 
     return watchlist.save();
+  }
+
+  async getAccountsByWatchlistId(watchlistId: string): Promise<Account[]> {
+    const watchlist = await this.watchlistModel.findById(watchlistId).populate('accounts');
+    if (!watchlist) {
+      throw new Error('No existing watchlist');
+    }
+    return watchlist.accounts;
   }
 }

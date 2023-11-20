@@ -1,6 +1,6 @@
-POST http://localhost:3000/watchlist/: HTTP/1.1
+POST http://localhost:3000/watchlist/6559226decb84b93d51608d4 HTTP/1.1
 Content-Type: application/json
 
 {
-    "balance": "124"
+    "address": "TUTERCERAAMADRE"
 }
