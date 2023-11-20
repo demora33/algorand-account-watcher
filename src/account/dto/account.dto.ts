@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum, IsOptional, IsNumber } from 'class-validator';
+
+export enum AccountStatus {
+  Offline = 'Offline',
+  Online = 'Online',
+}
+
 export class CreateAccountoDTO {
   @IsNotEmpty()
   @IsString()
@@ -7,5 +13,18 @@ export class CreateAccountoDTO {
 
 export class UpdateAccountoDTO {
     @IsNotEmpty()
+    @IsNumber()
+    round: number;
+
+    @IsOptional()
+    @IsNotEmpty()
     balance: string;
+
+    @IsOptional()
+    @IsEnum(AccountStatus)
+    status: AccountStatus;
+
+    @IsNotEmpty()
+    @IsNumber()
+    rewards: number;
   }

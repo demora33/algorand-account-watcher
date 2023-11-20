@@ -38,7 +38,7 @@ export class WatchlistService {
   }
 
   async getAccountsByWatchlistId(watchlistId: string): Promise<Account[]> {
-    const watchlist = await this.watchlistModel.findById(watchlistId).populate('accounts');
+    const watchlist = await this.watchlistModel.findById(watchlistId);
     if (!watchlist) {
       throw new Error('No existing watchlist');
     }

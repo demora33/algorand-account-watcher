@@ -17,11 +17,14 @@ export class AccountService {
   }
 
   async updateAccount(
-    id: string,
+    address: string,
     updateAccountDTO: UpdateAccountoDTO,
   ): Promise<Account> {
     return this.accountModel
-      .findByIdAndUpdate(id, updateAccountDTO, { new: true })
+      .findOneAndUpdate(
+        { address: address},
+        updateAccountDTO,
+        { new: true })
       .exec();
   }
 

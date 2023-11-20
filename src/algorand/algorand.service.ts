@@ -1,31 +1,37 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { AccountService } from '../account/account.service';
 import { WatchlistService } from 'src/watchlist/watchlist.service';
 import axios from 'axios';
+import { Account } from 'src/account/schemas/account.schema';
 
 @Injectable()
 export class AlgorandService {
   private readonly logger = new Logger(AlgorandService.name);
 
   constructor(
-    private accountService: AccountService,
     private watchlistService: WatchlistService,
+    private accountService: AccountService,
   ) {}
 
-  @Cron('*/60 * * * * *')
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    this.logger.debug('Called every 60 seconds');
+    // this.logger.debug('Called every 60 seconds');
+    console.log('Cron has started');
+    console.log('Checking accounts in watchlist');
 
     const accounts = await this.watchlistService.getAccountsByWatchlistId(
-      '6559226decb84b93d51608d4',
+      '655922e6ecb84b93d51608d6',
     );
 
-    // Para cada cuenta, llama a la API externa y actualiza la base de datos
     for (const account of accounts) {
-      // Llama a la API externa (reemplaza esto con la llamada real a la API)
       console.log('address', account.address);
-      await this.checkAccountState(account.address);
+
+      const watchedAccount: Account =
+        await this.accountService.findAccountByAddress(account.address);
+      //   console.log('watchedAccount', watchedAccount);
+
+      await this.checkAccountState(watchedAccount);
 
       // Si hay cambios, actualiza la base de datos
       //   if (
@@ -41,20 +47,28 @@ export class AlgorandService {
     }
   }
 
-  private async checkAccountState(address: string) {
+  private async checkAccountState(account: Account) {
     try {
-      const response = await axios.get(`https://algorand-node-api/${address}`);
-      console.log('response', response.data);
-      const newBalance = response.data.balance;
+      const response = await axios.get(
+        `https://testnet-api.algonode.cloud/v2/accounts/${account.address}`,
+      );
+      //   console.log('response', response.data);
+      const accountBalance = response.data.amount;
 
-      //   if (newBalance !== this.watcherList[address]) {
-      //     console.log(
-      //       `Account ${address} state changed. New balance: ${newBalance}`,
-      //     );
-      //     this.watcherList[address] = newBalance;
-      //   }
+      console.log('accountBalance', accountBalance);
+      console.log('account.balance', account.balance);
+
+      if (accountBalance !== account.balance) {
+        console.log(
+          `Account ${account.address} state changed. New balance: ${
+            accountBalance / 1000000
+          }`,
+        );
+        // await this.accountService.updateAccount(account.id, accountBalance);
+      }
     } catch (error) {
-      console.error(`Error querying account ${address}: ${error.message}`);
+      //   console.error(`Error querying account ${address}: ${error.message}`);
+      throw error;
     }
   }
 }

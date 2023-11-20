@@ -16,6 +16,7 @@ import { AccountModule } from 'src/account/account.module';
     AccountModule
   ],
   providers: [WatchlistService],
-  controllers: [WatchlistController],
+  controllers: [WatchlistController], 
+  exports: [WatchlistService],
 })
 export class WatchlistModule {}
