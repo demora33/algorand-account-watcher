@@ -7,18 +7,23 @@ export class WatchlistController {
     private watchlistService: WatchlistService
   ) {}
 
-  @Get('accounts')
-  async getTrackedAccounts() {
-    return this.watchlistService.getTrackedAccounts();
+  @Get('accounts/:watchlistId')
+  async getTrackedAccounts(
+    @Param('watchlistId') watchlistId: string
+  ) {
+    return this.watchlistService.getAccountsByWatchlistId(watchlistId);
   }
 
-  @Post('add/:address')
-  async addAccount(@Param('address') address: string) {
-    return this.watchlistService.addAddress(address);
+  @Post('add/:watchlistId')
+  async addAccount(
+    @Param('watchlistId') watchlistId: string,
+    @Body('account') account: string
+    ) {
+    return this.watchlistService.addAccount(watchlistId, account);
   }
 
   @Post('create')
-  async createWatchlist() {
-    return this.watchlistService.create();
+  async createWatchlist(@Body('watchlistName') watchlistName: string) {
+    return this.watchlistService.create(watchlistName);
   }
 }

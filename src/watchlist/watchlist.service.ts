@@ -4,8 +4,6 @@ import { Watchlist } from './schemas/Watchlist.schema';
 import { Model } from 'mongoose';
 import { Account } from 'src/account/schemas/account.schema';
 import { AccountService } from 'src/account/account.service';
-// import { CreateWatchlistoDto } from './dto/Watchlist.dto';
-// import { UpdateWatchlistoDto } from './dto/Watchlist.dto';
 
 @Injectable()
 export class WatchlistService {
@@ -14,22 +12,27 @@ export class WatchlistService {
     private accountService: AccountService,
   ) {}
 
-  async create(): Promise<Watchlist> {
-    const createdWatchlist = new this.watchlistModel();
+  async create(name: string): Promise<Watchlist> {
+    let createdWatchlist = await this.watchlistModel.findOne({name: name});
+    if (createdWatchlist) {
+      throw new Error('Watchlist with that name already exists');
+    }
+    createdWatchlist = new this.watchlistModel({
+      name: name,
+    });
     return createdWatchlist.save();
   }
 
-  async addAddress(address: string): Promise<Watchlist> {
-    const lastestWatchlistId = await this.findLatestWatchlistId();
-    const watchlist = await this.watchlistModel.findById(lastestWatchlistId);
+  async addAccount(watchlistId: string, address: string): Promise<Watchlist> {
+    const watchlist = await this.watchlistModel.findById(watchlistId);
 
     if (!watchlist) {
       throw new Error('Could not find watchlist');
     }
     let account: Account =
       await this.accountService.findAccountByAddress(address);
+
     if (!account) {
-      console.log('No existing account');
       account = await this.accountService.createAccount(address);
     }
 
@@ -50,17 +53,20 @@ export class WatchlistService {
     if (!watchlist) {
       throw new Error('No existing watchlist');
     }
+    if (watchlist.accounts.length === 0) { 
+      throw new Error('No accounts added in watchlist');
+    }
     return watchlist.accounts;
   }
 
-  async findLatestWatchlistId() {
-    const lastestWatchlist = await this.watchlistModel.findOne().sort({ createdAt: -1 }).exec();
-    return lastestWatchlist._id;
-  }
-
-  async getTrackedAccounts(): Promise<Account[]> {
-    const lastestWatchlistId = await this.findLatestWatchlistId();
-    const accounts = await this.getAccountsByWatchlistId(lastestWatchlistId.toString());
-    return accounts;
+  async findLatestWatchlist() {
+    const latestWatchlist = await this.watchlistModel
+      .findOne()
+      .sort({ createdAt: -1 })
+      .exec();
+    if (!latestWatchlist) {
+      throw new Error('No existing watchlist, create one first');
+    }
+    return latestWatchlist;
   }
 }

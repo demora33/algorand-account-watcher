@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Account } from './schemas/account.schema';
 import { Model } from 'mongoose';
-import { CreateAccountoDTO } from './dto/account.dto';
 import { UpdateAccountoDTO } from './dto/account.dto';
 
 @Injectable()

@@ -5,6 +5,7 @@ import { WatchlistService } from 'src/watchlist/watchlist.service';
 import axios from 'axios';
 import { UpdateAccountoDTO } from 'src/account/dto/account.dto';
 import { AccountStatus } from '../account/dto/account.dto';
+import { last } from 'rxjs';
 
 @Injectable()
 export class AlgorandService {
@@ -14,23 +15,20 @@ export class AlgorandService {
     private watchlistService: WatchlistService,
     private accountService: AccountService,
   ) {}
+  
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  // This method is called every 60 seconds to update the state of the accounts
+  // in the latest watchlist that has been created.
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
     this.logger.debug('Cron has started');
     console.log('------------------------------------');
-    console.log('Checking accounts in latest watchlist');
 
-    const watchlistId = await this.watchlistService.findLatestWatchlistId();
-    const accounts = await this.watchlistService.getAccountsByWatchlistId(
-      watchlistId.toString(),
-    );
+    const latestWatchlist = await this.watchlistService.findLatestWatchlist();
+    console.log(`Checking for account updates in latest watchlist: ${latestWatchlist.name}`);
 
-    if (accounts.length === 0) {
-      console.log('No accounts added in latest watchlist');
-      return;
-    }
-
+    const accounts = await this.watchlistService.getAccountsByWatchlistId(latestWatchlist._id.toString());
+    
     for (const account of accounts) {
       const watchedAccount = await this.accountService.findAccountByAddress(
         account.address,
@@ -82,7 +80,6 @@ export class AlgorandService {
           `Account ${account.address} state changed. New rewards: ${accountAlgorandData.rewards}`,
         );
       }
-      // console.log(updateAccount);
       if (updateAccount.lastBlockUpdate != 0) {
         await this.accountService.updateAccount(account._id, updateAccount);
       } else {

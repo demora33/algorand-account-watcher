@@ -1,11 +1,16 @@
 # POST http://localhost:3000/watchlist/create HTTP/1.1
-
-
-# POST http://localhost:3000/watchlist/add/BMUDVDWBLSCTFXAQ6VRGXNUTWZARIV4I3IEPQR4ODRO3NYRSKQOWXJMUZA HTTP/1.1
 # Content-Type: application/json
 
 # {
-#     "address": "JELZJBBZDH3XJGUCQC6HICGWYGJC5QAGNZUK7ZJTUQCJLXNATXPM52SKNE"
+#     "watchlistName": "My Watchlist Nº 2"
 # }
 
-GET  http://localhost:3000/watchlist/accounts HTTP/1.1
+
+POST http://localhost:3000/watchlist/add/655bde54ebc0f66042924fe5 HTTP/1.1
+Content-Type: application/json
+
+{
+    "account": "RXY4EBDWFVL4JPGUICFU7JRMRPGZFTSGQLU6XLUJ2A3DVODGKEI2PRX5Y4"
+}
+
+# GET  http://localhost:3000/watchlist/accounts/655bde54ebc0f66042924fe5 HTTP/1.1
