@@ -1,35 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Account } from './schemas/account.schema';
-import { Model } from 'mongoose'
-import { CreateAccountoDto } from './dto/account.dto';
-import { UpdateAccountoDto } from './dto/account.dto';
-
-
-
-
+import { Model } from 'mongoose';
+import { CreateAccountoDTO } from './dto/account.dto';
+import { UpdateAccountoDTO } from './dto/account.dto';
 
 @Injectable()
 export class AccountService {
-    constructor(
-        @InjectModel(Account.name) private accountModel: Model<Account>
-    ){}
+  constructor(
+    @InjectModel(Account.name) private accountModel: Model<Account>,
+  ) {}
 
-    async create(account: string) {
-        const createdAccount = new this.accountModel(account);
-        return createdAccount.save();
-    }
+  async createAccount(address: string): Promise<Account> {
+    const createdAccount = new this.accountModel({ address });
+    return createdAccount.save();
+  }
 
-    async update(id: string, body: UpdateAccountoDto) {
-        return this.accountModel.findByIdAndUpdate(id, body).exec();
-    }
+  async updateAccount(
+    id: string,
+    updateAccountDTO: UpdateAccountoDTO,
+  ): Promise<Account> {
+    return this.accountModel
+      .findByIdAndUpdate(id, updateAccountDTO, { new: true })
+      .exec();
+  }
 
-    async findAll() {
-        return this.accountModel.find().exec();    
-    }
+  async findAll(): Promise<Account[]> {
+    return this.accountModel.find().exec();
+  }
 
-    async findAccount(id: string) {
-        return this.accountModel.findById(id).exec();    
-    }
-    
+  async findAccountByAddress(address: string): Promise<Account> {
+    return this.accountModel.findOne({ address: address }).exec();
+  }
+
+  async findAccount(id: string): Promise<Account> {
+    return this.accountModel.findById(id).exec();
+  }
 }

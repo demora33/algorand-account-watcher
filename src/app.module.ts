@@ -6,11 +6,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AccountModule } from './account/account.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
 import { AlgorandModule } from './algorand/algorand.module';
+require('dotenv').config();
 
 @Module({
   imports: [
     // ScheduleModule.forRoot(),
-    MongooseModule.forRoot('mongodb+srv://test:test@cluster1.eh2icve.mongodb.net/alfonso-ddbb-test'),
+    MongooseModule.forRoot(process.env.DATABASE_URI),
     AccountModule,
     WatchlistModule,
     AlgorandModule

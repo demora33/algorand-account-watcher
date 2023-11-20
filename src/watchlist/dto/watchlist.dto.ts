@@ -1,13 +1,13 @@
 import { IsNotEmpty, IsString, IsMongoId, IsOptional } from 'class-validator';
 
 
-export class AddAccountToWatchlistDTO {
+export class AddAddressToWatchlistDTO {
 
   @IsNotEmpty()
   @IsString()
-  account: string;
+  address: string;
 
-  @IsOptional()
-  @IsMongoId()
-  watchlistId?: string;
+  // @IsOptional()
+  // @IsMongoId()
+  // watchlistId?: string;
 }
