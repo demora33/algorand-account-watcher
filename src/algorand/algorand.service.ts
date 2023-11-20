@@ -21,10 +21,9 @@ export class AlgorandService {
     console.log('------------------------------------');
     console.log('Checking accounts in latest watchlist');
 
-    const latestWatchlist: any =
-      await this.watchlistService.findLatestWatchlist();
+    const watchlistId = await this.watchlistService.findLatestWatchlistId();
     const accounts = await this.watchlistService.getAccountsByWatchlistId(
-      latestWatchlist._id,
+      watchlistId.toString(),
     );
 
     if (accounts.length === 0) {

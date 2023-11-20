@@ -8,7 +8,7 @@ import { UpdateAccountoDTO } from './dto/account.dto';
 @Injectable()
 export class AccountService {
   constructor(
-    @InjectModel(Account.name) private accountModel: Model<Account>,
+    @InjectModel(Account.name) private accountModel: Model<Account>
   ) {}
 
   async createAccount(address: string): Promise<Account> {

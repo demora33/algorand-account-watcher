@@ -1,37 +1,24 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { AccountService } from 'src/account/account.service';
 import { WatchlistService } from './watchlist.service';
-import { AddAddressToWatchlistDTO } from './dto/watchlist.dto';
 
 @Controller('watchlist')
 export class WatchlistController {
   constructor(
-    private watchlistService: WatchlistService,
-    private accountService: AccountService,
+    private watchlistService: WatchlistService
   ) {}
 
-  // @Get(':id')
-  // async getWatchlistState(
-  //     @Param() id: string
-  // ) {
-  //     return;
-  // }
-
-  @Post('/:id')
-  async addAccount(
-    @Param('id') id: string,
-    @Body() body: AddAddressToWatchlistDTO,
-  ) {
-    return this.watchlistService.addAddress(id, body.address);
+  @Get('accounts')
+  async getTrackedAccounts() {
+    return this.watchlistService.getTrackedAccounts();
   }
 
-  @Post()
+  @Post('add/:address')
+  async addAccount(@Param('address') address: string) {
+    return this.watchlistService.addAddress(address);
+  }
+
+  @Post('create')
   async createWatchlist() {
     return this.watchlistService.create();
   }
-
-  // @Get(':id/accounts')
-  // async getAccountsInWatchlist(@Param('id') id: string) {
-  //     // return this.watchlistService.getAccounts(id);
-  // }
 }

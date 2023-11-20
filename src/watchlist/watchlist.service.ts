@@ -19,11 +19,12 @@ export class WatchlistService {
     return createdWatchlist.save();
   }
 
-  async addAddress(watchlistId: string, address: string): Promise<Watchlist> {
-    const watchlist = await this.watchlistModel.findById(watchlistId);
+  async addAddress(address: string): Promise<Watchlist> {
+    const lastestWatchlistId = await this.findLatestWatchlistId();
+    const watchlist = await this.watchlistModel.findById(lastestWatchlistId);
 
     if (!watchlist) {
-      throw new Error('No existing watchlist');
+      throw new Error('Could not find watchlist');
     }
     let account: Account =
       await this.accountService.findAccountByAddress(address);
@@ -52,7 +53,14 @@ export class WatchlistService {
     return watchlist.accounts;
   }
 
-  async findLatestWatchlist(): Promise<Watchlist> {
-    return this.watchlistModel.findOne().sort({ createdAt: -1 }).exec();
+  async findLatestWatchlistId() {
+    const lastestWatchlist = await this.watchlistModel.findOne().sort({ createdAt: -1 }).exec();
+    return lastestWatchlist._id;
+  }
+
+  async getTrackedAccounts(): Promise<Account[]> {
+    const lastestWatchlistId = await this.findLatestWatchlistId();
+    const accounts = await this.getAccountsByWatchlistId(lastestWatchlistId.toString());
+    return accounts;
   }
 }
