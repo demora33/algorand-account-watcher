@@ -52,7 +52,7 @@ The Algorand Account Watcher is a simple REST API designed to add Algorand accou
 2. **Add an Account to the Watchlist:**
 
    ```bash
-   curl -X POST http://localhost:3000/watchlist/add/ -H "Content-Type: application/json" -d '{"account": "algorand-account-address"}'
+   curl -X POST http://localhost:3000/watchlist/add/your-watchlist-id -H "Content-Type: application/json" -d '{"account": "algorand-account-address"}'
    ```
 
 3. **Get the State of Accounts in a Watchlist:**
