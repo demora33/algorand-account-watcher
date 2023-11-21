@@ -25,5 +25,6 @@ export class WatchlistController {
   @Post('create')
   async createWatchlist(@Body('watchlistName') watchlistName: string) {
     return this.watchlistService.create(watchlistName);
+
   }
 }
