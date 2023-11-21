@@ -55,9 +55,9 @@ The Algorand Account Watcher is a simple REST API designed to add Algorand accou
    curl -X POST http://localhost:3000/watchlist/add/ -H "Content-Type: application/json" -d '{"account": "algorand-account-address"}'
    ```
 
-3. **Get the State of Accounts in a Watchlist (Replace `655c92868f8c3740c17066c4` with the actual watchlist ID):**
+3. **Get the State of Accounts in a Watchlist:**
    ```bash
-   curl http://localhost:3000/watchlist/accounts/655c92868f8c3740c17066c4
+   curl http://localhost:3000/watchlist/accounts/your-watchlist-id
    ```
 
 Ensure that the server is running and replace any details as needed based on your specific configuration and requirements.
@@ -76,7 +76,7 @@ Ensure that the server is running and replace any details as needed based on you
     {
       "name": "Your Watchlist Name",
       "accounts": [],
-      "_id": "xxxxx",
+      "_id": "your-watchlist-id",
       "createdAt": "2023-11-21T13:48:02.510Z",
       "updatedAt": "2023-11-21T13:48:02.510Z",
       "__v": 0
@@ -108,59 +108,9 @@ Ensure that the server is running and replace any details as needed based on you
     }
     ```
 
-Feel free to explore and enhance the functionalities according to your needs. Happy coding!
-
----
-
-Make sure to replace "your-username" in the GitHub clone URL, and customize the environment variables in the `.env` file with your MongoDB URI and Algorand node API URL.
-
 ## Technology Stack
 
-- [NestJS](https://nestjs.com/): A progressive Node.js framework for building efficient and scalable server-side applications.
+- [NestJS](https://nestjs.com/): A progressive Node.js framework for building server-side applications.
 - [AlgoNode.io](https://algonode.io/): Algorand Node API for interacting with the Algorand blockchain (use testnet).
 - [MongoDB](https://www.mongodb.com/): NoSQL database for storing watchlists and account information.
 
-## Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/algorand-account-watcher.git
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   cd algorand-account-watcher
-   npm install
-   ```
-
-3. Configure MongoDB:
-
-   - Update the MongoDB connection details in the `src/config/database.config.ts` file.
-
-4. Run the application:
-
-   ```bash
-   npm run start
-   ```
-
-5. Access the API at `http://localhost:3000`.
-
-## Endpoints
-
-- **Add Algorand Address:**
-
-  - `POST /watchlist/add`
-  - Body: `{ "address": "ALGORAND_ADDRESS" }`
-
-- **List Tracked Accounts:**
-  - `GET /watchlist/list`
-
-## Contribution
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
