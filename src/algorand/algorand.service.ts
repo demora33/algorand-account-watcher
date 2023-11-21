@@ -65,8 +65,9 @@ export class AlgorandService {
       console.log(
         `Checking account ${account.address} state on the Algorand Testnet`,
       );
+      const baseUrl = process.env.ALGONODE_TESTNET_URL;
       const response = await axios.get(
-        `https://testnet-api.algonode.cloud/v2/accounts/${account.address}`,
+        `${baseUrl}/v2/accounts/${account.address}`,
       );
 
       const accountAlgorandData = response.data;
@@ -78,6 +79,8 @@ export class AlgorandService {
         rewards: 0,
       };
 
+      // There are more fields that can be checked for changes, but for the purpose of this
+      // project, I am only considering this.
       if (accountAlgorandData.amount !== account.balance) {
         updateAccount.balance = accountAlgorandData.amount;
         updateAccount.lastBlockUpdate = accountAlgorandData.round;

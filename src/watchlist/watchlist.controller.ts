@@ -7,7 +7,7 @@ export class WatchlistController {
     private watchlistService: WatchlistService
   ) {}
 
-  @Get('accounts/:watchlistId')
+  @Get(':watchlistId')
   async getTrackedAccounts(
     @Param('watchlistId') watchlistId: string
   ) {

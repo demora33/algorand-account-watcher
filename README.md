@@ -13,88 +13,100 @@ The Algorand Account Watcher is a simple REST API designed to add Algorand accou
 ## Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/demora33/algorand-account-watcher.git
-    cd algorand-account-watcher
-    ```
+
+   ```bash
+   git clone https://github.com/demora33/algorand-account-watcher.git
+   cd algorand-account-watcher
+   ```
 
 2. Install dependencies:
-    ```bash
-    npm install
-    ```
+
+   ```bash
+   npm install
+   ```
 
 3. Create a `.env` file in the root directory with the following variables:
-    ```env
-    MONGODB_URI=your-mongodb-uri
-    ALGORAND_API_URL=your-algorand-node-api-url
-    ```
+   ```env
+   MONGODB_URI=your-mongodb-uri
+   ALGONODE_TESTNET_URL=your-algorand-node-api-url
+   ```
 
 ## Usage
 
 1. Start the application:
-    ```bash
-    npm run start
-    ```
+
+   ```bash
+   npm run start
+   ```
 
 2. Use the provided endpoints to create watchlists, add accounts, and list tracked accounts.
 
 ## Endpoints
 
 1. **Create a Watchlist:**
-    ```bash
-    curl -X POST http://localhost:3000/watchlist/create -H "Content-Type: application/json" -d '{"watchlistName": "my-first-watchlist"}'
-    ```
+
+   ```bash
+   curl -X POST http://localhost:3000/watchlist/create -H "Content-Type: application/json" -d '{"watchlistName": "my-first-watchlist"}'
+   ```
 
 2. **Add an Account to the Watchlist:**
-    ```bash
-    curl -X POST http://localhost:3000/watchlist/add/ -H "Content-Type: application/json" -d '{"account": "algorand-account-address"}'
-    ```
+
+   ```bash
+   curl -X POST http://localhost:3000/watchlist/add/ -H "Content-Type: application/json" -d '{"account": "algorand-account-address"}'
+   ```
 
 3. **Get the State of Accounts in a Watchlist (Replace `655c92868f8c3740c17066c4` with the actual watchlist ID):**
-    ```bash
-    curl http://localhost:3000/watchlist/accounts/655c92868f8c3740c17066c4
-    ```
+   ```bash
+   curl http://localhost:3000/watchlist/accounts/655c92868f8c3740c17066c4
+   ```
 
 Ensure that the server is running and replace any details as needed based on your specific configuration and requirements.
 
 - **Create Watchlist:**
-    - **Endpoint:** `POST /watchlist`
-    - **Request Body:**
-        ```json
-        {
-          "name": "Your Watchlist Name"
-        }
-        ```
-    - **Response:**
-        ```json
-        {
-          "watchlistId": "unique-watchlist-id"
-        }
-        ```
+
+  - **Endpoint:** `POST /watchlist/create`
+  - **Request Body:**
+    ```json
+    {
+      "name": "Your Watchlist Name"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "name": "Your Watchlist Name",
+      "accounts": [],
+      "_id": "xxxxx",
+      "createdAt": "2023-11-21T13:48:02.510Z",
+      "updatedAt": "2023-11-21T13:48:02.510Z",
+      "__v": 0
+    }
+    ```
 
 - **Add Account to Watchlist:**
-    - **Endpoint:** `POST /watchlist/:watchlistId/account`
-    - **Request Body:**
-        ```json
-        {
-          "account": "Algorand Account Address"
-        }
-        ```
+
+  - **Endpoint:** `POST /watchlist/add/:watchlistId`
+  - **Request Body:**
+    ```json
+    {
+      "account": "Algorand Account Address"
+    }
+    ```
 
 - **List Tracked Accounts:**
-    - **Endpoint:** `GET /watchlist/:watchlistId`
-    - **Response:**
-        ```json
+  - **Endpoint:** `GET /watchlist/:watchlistId`
+  - **Response:**
+    ```json
+    {
+      "accounts": [
         {
-          "accounts": [
-            {
-              "account": "Algorand Account Address",
-              "state": "Account State"
-            },
-            // Additional accounts...
-          ]
+          "account": "Algorand Account Address",
+          "state": "Account State"
         }
-        ```
+        // Additional accounts...
+      ]
+    }
+    ```
 
 Feel free to explore and enhance the functionalities according to your needs. Happy coding!
 
@@ -124,6 +136,7 @@ Make sure to replace "your-username" in the GitHub clone URL, and customize the 
    ```
 
 3. Configure MongoDB:
+
    - Update the MongoDB connection details in the `src/config/database.config.ts` file.
 
 4. Run the application:
@@ -137,6 +150,7 @@ Make sure to replace "your-username" in the GitHub clone URL, and customize the 
 ## Endpoints
 
 - **Add Algorand Address:**
+
   - `POST /watchlist/add`
   - Body: `{ "address": "ALGORAND_ADDRESS" }`
 
