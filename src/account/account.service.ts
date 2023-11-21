@@ -30,8 +30,6 @@ export class AccountService {
   }
 
   async findAccountByAddress(address: string): Promise<Account> {
-    console.log('Finding Account');
-    console.log(address);
     return this.accountModel.findOne({ address: address }).exec();
   }
 

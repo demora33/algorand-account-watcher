@@ -2,15 +2,15 @@
 # Content-Type: application/json
 
 # {
-#     "watchlistName": "My Watchlist Nº 5"
+#     "watchlistName": "My Definite Watchlist"
 # }
 
 
-POST http://localhost:3000/watchlist/add/655c8632ab28341aec52486c HTTP/1.1
+POST http://localhost:3000/watchlist/add/655c92868f8c3740c17066c4 HTTP/1.1
 Content-Type: application/json
 
 {
-    "account": "JELZJBBZDH3XJGUCQC6HICGWYGJC5QAGNZUK7ZJTUQCJLXNATXPM52SKNE"
+    "account": "73V26FPQ5A2ZLOKSS62SJ2WKMIMFWHOCNRXPRRV65ZY3ZUM5X5R6HJBJ2A"
 }
 
-# GET  http://localhost:3000/watchlist/accounts/655bfa872f093dcdf2e542ef HTTP/1.1
+# GET  http://localhost:3000/watchlist/accounts/655c92868f8c3740c17066c4 HTTP/1.1

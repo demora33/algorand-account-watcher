@@ -25,7 +25,6 @@ export class WatchlistService {
 
   async addAccount(watchlistId: string, address: string): Promise<Watchlist> {
     const watchlist = await this.watchlistModel.findById(watchlistId);
-
     if (!watchlist) {
       throw new Error('Could not find watchlist');
     }
@@ -43,9 +42,11 @@ export class WatchlistService {
       throw new Error('Account already exists in watchlist');
     }
 
-    watchlist.accounts.push(account);
-
-    return watchlist.save();
+    return this.watchlistModel.findByIdAndUpdate(
+      watchlistId,
+      { $push: { accounts: account } },
+      { new: true },
+    ).exec();
   }
 
   async getAccountsByWatchlistId(watchlistId: string): Promise<Account[]> {

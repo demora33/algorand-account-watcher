@@ -15,66 +15,52 @@ export class AlgorandService {
     private watchlistService: WatchlistService,
     private accountService: AccountService,
   ) {}
-  
 
-  // This method is called every 60 seconds to update the state of the accounts
-  // in the latest watchlist that has been created.
-  // @Cron(CronExpression.EVERY_10_SECONDS)
-  // async handleCron() {
-  //   this.logger.debug('Cron has started');
-  //   console.log('------------------------------------');
-
-  //   const latestWatchlist = await this.watchlistService.findLatestWatchlist();
-  //   console.log(`Checking for account updates in latest watchlist: ${latestWatchlist.name}`);
-
-  //   const accounts: any = await this.watchlistService.getAccountsByWatchlistId(latestWatchlist._id.toString());
-  //   for (const account of accounts) {
-  //     console.log('------------------------------------');
-  //     console.log(account.balance)
-
-  //     const watchedAccount = await this.accountService.findAccountByAddress(account.address);
-  //     console.log(watchedAccount);
-  //     console.log(`Checking account ${watchedAccount.address}`);
-  //     const updatedAccount = await this.checkAndUpdateAccount(watchedAccount);
-  //     // if (updated) {
-  //     // }
-  //     updatedAccounts.push(updatedAccount);
-  //   }
-  //   console.log(updatedAccounts);
-  //   if (updatedAccounts.length > 0) {
-  //     console.log('------------------------------------');
-  //     // await this.watchlistService.updateWatchlist(latestWatchlist._id.toString(), updatedAccounts);
-  //   }
-  // }
-
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  // This cron method is executed every minute. It checks for any change in the state
+  // of the accounts in the latest watchlist.
+  // For the future, this method can be executed to update several watchlists at a time.
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
     this.logger.debug('Cron has started');
     console.log('------------------------------------');
 
+    // Get the latest watchlist to check for account updates
     const latestWatchlist = await this.watchlistService.findLatestWatchlist();
-    console.log(`Checking for account updates in latest watchlist: ${latestWatchlist.name}`);
+    console.log(
+      `Checking for account updates in latest watchlist: ${latestWatchlist.name}`,
+    );
+    console.log('------------------------------------');
 
-    const accounts: any = await this.watchlistService.getAccountsByWatchlistId(latestWatchlist._id.toString());
-    
-    
+    const accounts: any = await this.watchlistService.getAccountsByWatchlistId(
+      latestWatchlist._id.toString(),
+    );
+
     let updatedAccounts: any[] = [];
+    let hasChanged = false;
     for (const account of accounts) {
-      const { updatedAccount, updated } = await this.checkAndUpdateAccount(account);
+      const { updatedAccount, updated } =
+        await this.checkAndUpdateAccount(account);
       if (updated) {
         updatedAccounts.push(updatedAccount);
+        hasChanged = true;
+      } else {
+        updatedAccounts.push(account);
       }
     }
-    if(updatedAccounts.length > 0){
-      console.log('Updating watchlist');
-      await this.watchlistService.updateWatchlist(latestWatchlist._id.toString(), updatedAccounts);
+    if (updatedAccounts.length > 0 && hasChanged) {
+      await this.watchlistService.updateWatchlist(
+        latestWatchlist._id.toString(),
+        updatedAccounts,
+      );
     }
   }
 
   // This method checks if there is any change in the state between the local database
   // and the Algorand Testnet. If there is a change, it updates the local database.
   // Returns the updated account.
-  private async checkAndUpdateAccount(account: any): Promise< { updatedAccount: Account, updated: boolean}> {
+  private async checkAndUpdateAccount(
+    account: any,
+  ): Promise<{ updatedAccount: Account; updated: boolean }> {
     try {
       console.log(
         `Checking account ${account.address} state on the Algorand Testnet`,
@@ -85,16 +71,12 @@ export class AlgorandService {
 
       const accountAlgorandData = response.data;
 
-
       let updateAccount: UpdateAccountDTO = {
         lastBlockUpdate: 0,
         balance: '',
         status: AccountStatus.Offline,
         rewards: 0,
       };
-
-      // console.log('algorand data',accountAlgorandData);
-      // console.log('database data',account);
 
       if (accountAlgorandData.amount !== account.balance) {
         updateAccount.balance = accountAlgorandData.amount;
@@ -120,16 +102,23 @@ export class AlgorandService {
           `Account ${account.address} state changed. New rewards: ${accountAlgorandData.rewards}`,
         );
       }
-      // If there is a change in the state, update the local database
+      // If there is a change in the account state, update the local database
       if (updateAccount.lastBlockUpdate != 0) {
-        console.log(`Updating account ${account.address} in the local database`);
-        const updatedAccount = await this.accountService.updateAccount(account._id.toString(), updateAccount);
-        return {updatedAccount: updatedAccount, updated: true};
-      } 
-      else {
-        console.log(`Account ${account.address} state has not changed`)
-        return {updatedAccount: account, updated: false};
+        console.log(
+          `Updating account ${account.address} in the local database`,
+        );
+        console.log('------------------------------------');
 
+        const updatedAccount = await this.accountService.updateAccount(
+          account._id.toString(),
+          updateAccount,
+        );
+        return { updatedAccount: updatedAccount, updated: true };
+      } else {
+        console.log(`Account ${account.address} state has not changed`);
+        console.log('------------------------------------');
+
+        return { updatedAccount: account, updated: false };
       }
     } catch (error) {
       console.error(
