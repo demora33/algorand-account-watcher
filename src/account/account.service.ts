@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Account } from './schemas/account.schema';
 import { Model } from 'mongoose';
-import { UpdateAccountoDTO } from './dto/account.dto';
+import { UpdateAccountDTO } from './dto/account.dto';
 
 @Injectable()
 export class AccountService {
   constructor(
-    @InjectModel(Account.name) private accountModel: Model<Account>
+    @InjectModel(Account.name) private accountModel: Model<Account>,
   ) {}
 
   async createAccount(address: string): Promise<Account> {
@@ -17,15 +17,11 @@ export class AccountService {
 
   async updateAccount(
     id: string,
-    updateAccountDTO: UpdateAccountoDTO,
+    updateAccountDTO: UpdateAccountDTO,
   ): Promise<Account> {
-
-    console.log('Updating Account');
     return this.accountModel
-      .findByIdAndUpdate(
-        id,
-        updateAccountDTO,
-        { new: true })
+
+      .findByIdAndUpdate(id, updateAccountDTO, { new: true })
       .exec();
   }
 
@@ -34,6 +30,8 @@ export class AccountService {
   }
 
   async findAccountByAddress(address: string): Promise<Account> {
+    console.log('Finding Account');
+    console.log(address);
     return this.accountModel.findOne({ address: address }).exec();
   }
 

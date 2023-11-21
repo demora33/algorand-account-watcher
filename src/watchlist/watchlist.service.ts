@@ -69,4 +69,16 @@ export class WatchlistService {
     }
     return latestWatchlist;
   }
+
+  async updateWatchlist(
+    id: string,
+    accounts: Account[],
+  ): Promise<Watchlist> {
+    return this.watchlistModel
+      .findByIdAndUpdate(
+        id,
+        { $set: { accounts: accounts } },
+        { new: true })
+      .exec();
+  }
 }

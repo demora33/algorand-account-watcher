@@ -5,13 +5,13 @@ export enum AccountStatus {
   Online = 'Online',
 }
 
-export class CreateAccountoDTO {
+export class CreateAccountDTO {
   @IsNotEmpty()
   @IsString()
   address: string;
 }
 
-export class UpdateAccountoDTO {
+export class UpdateAccountDTO {
     @IsNotEmpty()
     @IsNumber()
     lastBlockUpdate: number;
